@@ -50,6 +50,22 @@ services:
       inner:
         aliases:
           - mailcatcher
+  solr:
+    image: solr:9.3
+    container_name: solr
+    ports:
+     - 8983:8983
+     - "9983:9983"
+    entrypoint:      
+      - solr
+      - start
+      - -c
+      - -f     
+    networks:
+      inner:
+        aliases:
+          - solr
+     
   miserend:
     container_name: miserend
     build:
