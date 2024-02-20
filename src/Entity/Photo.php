@@ -17,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'photos')]
 class Photo
 {
+    public const BASEPATH = '/kepek/templomok';
+
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue('AUTO')]
@@ -116,6 +118,11 @@ class Photo
     public function getChurch(): ?Church
     {
         return $this->church;
+    }
+
+    public function getUrl(): string
+    {
+        return self::BASEPATH . '/' . $this->getChurch()->getId() . '/' . $this->getFilename();
     }
 
     /*

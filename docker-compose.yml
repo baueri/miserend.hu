@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql:
     image: mysql:5.7
-    container_name: mysql
+    container_name: miserend-mysql
     build:
       dockerfile: docker/Dockerfile.mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -27,7 +27,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pma
+    container_name: miserend-pma
     links:
       - mysql
     environment:
@@ -56,15 +56,22 @@ services:
 
   miserend-build:
     container_name: miserend-build
+    links:
+      - mysql
     build:
       dockerfile: docker/Dockerfile.build.miserend
     volumes:
       - .:/miserend
     environment:
       MISEREND_WEBAPP_ENVIRONMENT: ${MISEREND_WEBAPP_ENVIRONMENT:-development}
+    depends_on:
+      - mysql
+      - meilisearch
 
   miserend:
-    container_name: miserend
+    container_name: miserend-app
+    links:
+      - meilisearch
     build:
       dockerfile: docker/Dockerfile.miserend
     volumes:
@@ -82,6 +89,21 @@ services:
     depends_on:
       - mysql
       - mailcatcher
+      - meilisearch
+
+###> meilisearch/search-bundle ###
+  meilisearch:
+    image: getmeili/meilisearch:${MEILISEARCH_VERSION:-v1.0}
+    environment:
+      # You should definitely change the master key in production
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-!ChangeMe!}
+    volumes:
+      - meilisearch_data:/meili_data
+    networks:
+        inner:
+          aliases:
+            - meilisearch
+###< meilisearch/search-bundle ###
 
 networks:
   inner:
@@ -90,3 +112,7 @@ networks:
 volumes:
   db_data: {}
   images: {}
+
+###> meilisearch/search-bundle ###
+  meilisearch_data:
+###< meilisearch/search-bundle ###

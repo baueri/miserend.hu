@@ -9,6 +9,8 @@
         "doctrine/doctrine-migrations-bundle": "3.3.0",
         "doctrine/orm": "^2.17",
         "illuminate/database": "10.*",
+        "meilisearch/search-bundle": "^0.14.0",
+        "nyholm/psr7": "^1.8",
         "phpmailer/phpmailer": "^6.8.0",
         "symfony/console": "^7.0",
         "symfony/dependency-injection": "^7.0",
@@ -63,7 +65,8 @@
     "config": {
         "allow-plugins": {
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "php-http/discovery": true
         },
         "sort-packages": true
     },

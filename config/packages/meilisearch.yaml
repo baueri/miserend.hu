@@ -1,0 +1,12 @@
+meilisearch:
+    url: '%env(MEILISEARCH_URL)%' # URL of the Meilisearch server (mandatory)
+    api_key: '%env(MEILISEARCH_API_KEY)%' # API key to access the Meilisearch server (mandatory)
+    prefix: '%env(MEILISEARCH_PREFIX)%'
+    batchSize: 250
+    indices:
+        - name: churches
+          class: App\Entity\Church
+        # Define entities or documents that should be indexed to Meilisearch.
+        # See https://github.com/meilisearch/meilisearch-symfony/wiki/configure-searchable-data
+        #- name: posts
+        #  class: App\Entity\Post

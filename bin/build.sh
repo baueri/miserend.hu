@@ -32,6 +32,8 @@ then
   mv /tmp/symfony.env.local .env.local
 fi
 
+chown 1000:1000 .env.local
+
 # bin/console cache:clear || exit $?
 # bin/console cache:warmup || exit $?
 

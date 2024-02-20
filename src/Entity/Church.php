@@ -16,6 +16,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
+use Illuminate\Support\Facades\App;
+use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -27,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: ChurchRepository::class)]
 #[ORM\Table(name: 'templomok')]
-class Church implements EntityModificationDateTimeInterface
+class Church implements EntityModificationDateTimeInterface, NormalizableInterface
 {
     use EntityModificationDateTimeTrait;
 
@@ -93,6 +97,9 @@ class Church implements EntityModificationDateTimeInterface
 
     #[ORM\Column(name: 'miseaktiv', type: Types::BOOLEAN)]
     private ?bool $massActive = true;
+
+    #[ORM\OneToMany(mappedBy: 'church', targetEntity: Photo::class)]
+    private ?Collection $photos;
 
     public const MODERATION_ACCEPTED = 'i';
     public const MODERATION_AWAITING_VERIFICATION = 'f';
@@ -507,5 +514,29 @@ class Church implements EntityModificationDateTimeInterface
     public function setRemark(?string $remark): void
     {
         $this->remark = $remark;
+    }
+
+
+    /**
+     * @return Collection<int, Photo>|null
+     */
+    public function getPhotos(): ?Collection
+    {
+        return $this->photos;
+    }
+
+    public function normalize(NormalizerInterface $normalizer, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    {
+        $photos = $this->getPhotos();
+        return [
+            'name' => $this->getName(),
+            'knownName' => $this->getKnownName(),
+            'country' => $this->getCountry(),
+            'county' => $this->getCounty(),
+            'city' => $this->getCity(),
+            'slug' => $this->getSlug(),
+            'osmUrl' => $this->getOsmUrl(),
+            'thumbnail' => $photos->count() > 1 ? 'https://miserend.hu' . $this->getPhotos()->last()->getUrl() : ''
+        ];
     }
 }

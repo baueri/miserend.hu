@@ -8,7 +8,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN apt-get update && apt-get upgrade -y -o DPkg::Options::=--force-confold
 
 # Base dependencies
-RUN apt-get install -y curl git build-essential
+RUN apt-get install -y curl git build-essential zlib1g-dev libpng-dev
 
 # php extensions
 RUN install-php-extensions mysqli pdo pdo_mysql zip
